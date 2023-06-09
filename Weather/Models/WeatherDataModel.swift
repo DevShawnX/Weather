@@ -12,9 +12,9 @@ struct WeatherDataModel: Decodable {
     var weather: [WeatherInfo]
     var main: TemperatureInfo
     var visibility: Int?
-    var dt: Double?
-    var sys: SunInfo
-    var name: String?
+    var dt: Double? //Unix Timestamp UTC
+    var sys: SunInfo //Sunrise and Sunsine Time
+    var name: String? //City Name
     
     struct Coordinates: Decodable {
         var lon: Double?
