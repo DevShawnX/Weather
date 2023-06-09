@@ -45,7 +45,7 @@ class HomeViewController: UIViewController {
     }
     
     func fetchCityCoordinates(cityName: String) {
-        let geocodingAPIUrl = URL(string: AppConstants.URL.geocodingAPIRootUrl + AppConstants.URL.cityParam + cityName + AppConstants.URL.apiKeyParam + AppConstants.URL.apiKey)
+        let geocodingAPIUrl = URL(string: AppConstants.URL.geocodingAPIRootUrl + AppConstants.URL.cityParam + cityName + AppConstants.URL.apiKeyParam + fetchApiKey())
         viewModel.fetchGeocodingData(url: geocodingAPIUrl) { location in
             self.coordinates = location
             if let latitudeDouble = self.coordinates.first?.lat, let longitudeDouble = self.coordinates.first?.lon {
@@ -58,7 +58,7 @@ class HomeViewController: UIViewController {
     }
     
     func searchCurrentWeather(latitude: String, longitude: String) {
-        let weatherAPIUrl = URL(string: AppConstants.URL.weatherAPIRootUrl + AppConstants.URL.latitudeParam + latitude + AppConstants.URL.longitudeParam + longitude + AppConstants.URL.unitsParam + AppConstants.URL.imperialUnit + AppConstants.URL.apiKeyParam + AppConstants.URL.apiKey)
+        let weatherAPIUrl = URL(string: AppConstants.URL.weatherAPIRootUrl + AppConstants.URL.latitudeParam + latitude + AppConstants.URL.longitudeParam + longitude + AppConstants.URL.unitsParam + AppConstants.URL.imperialUnit + AppConstants.URL.apiKeyParam + fetchApiKey())
         viewModel.fetchWeatherData(url: weatherAPIUrl) { weatherData in
             self.weatherDataSource = weatherData
             self.locationManager.stopUpdatingLocation()
@@ -69,16 +69,25 @@ class HomeViewController: UIViewController {
     func displayWeatherInfo() {
         if let weatherIcon = self.weatherDataSource?.weather[0].icon, let cityName = self.weatherDataSource?.name, let temperature = self.weatherDataSource?.main.temp, let weather = self.weatherDataSource?.weather[0].main, let weatherDesc = self.weatherDataSource?.weather[0].description, let minTemp = self.weatherDataSource?.main.tempMin, let maxTemp = self.weatherDataSource?.main.tempMax, let feelsLike = self.weatherDataSource?.main.feelsLike, let humidity = self.weatherDataSource?.main.humidity, let sunriseTime = self.weatherDataSource?.sys.sunrise, let sunsetTime = self.weatherDataSource?.sys.sunset, let lastUpdatedTime = self.weatherDataSource?.dt {
             DispatchQueue.global(qos: .background).async {
-                let iconUrl = URL(string: AppConstants.URL.iconRootUrl + weatherIcon + AppConstants.URL.iconExtension)
-                do {
-                    guard let url = iconUrl else { return }
-                    let iconData = try Data(contentsOf: url)
-                    let iconImage = UIImage(data: iconData)
+                if let image = CacheImage.shared.getImageCache(key: weatherIcon) {
                     DispatchQueue.main.async {
-                        self.weatherIconImage.image = iconImage
+                        self.weatherIconImage.image = image
                     }
-                } catch {
-                    print(error.localizedDescription)
+                } else {
+                    let iconUrl = URL(string: AppConstants.URL.iconRootUrl + weatherIcon + AppConstants.URL.iconExtension)
+                    do {
+                        guard let url = iconUrl else { return }
+                        let iconData = try Data(contentsOf: url)
+                        let iconImage = UIImage(data: iconData)
+                        if let image = iconImage {
+                            CacheImage.shared.setImage(image: image, key: weatherIcon)
+                            DispatchQueue.main.async {
+                                self.weatherIconImage.image = image
+                            }
+                        }
+                    } catch {
+                        print(error.localizedDescription)
+                    }
                 }
             }
             
@@ -131,5 +140,14 @@ extension HomeViewController: CLLocationManagerDelegate {
     
     func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
         print(error.localizedDescription)
+    }
+}
+
+extension HomeViewController {
+    func fetchApiKey() -> String {
+        guard let configPath = Bundle.main.path(forResource: "Config", ofType: "plist"), let config = NSDictionary(contentsOfFile: configPath), let apiKey = config["ApiKey"] as? String else {
+            fatalError("Unable to read API Key from Config file!")
+        }
+        return apiKey
     }
 }

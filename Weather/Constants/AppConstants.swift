@@ -12,8 +12,6 @@ enum AppConstants {
         static let geocodingAPIRootUrl = "https://api.openweathermap.org/geo/1.0/direct?"
         static let cityParam = "q="
         static let apiKeyParam = "&appid="
-        //TODO: Store API Key in Plist
-        static let apiKey = "2d100bbd702642e47facdc29707c728b"
         static let weatherAPIRootUrl = "https://api.openweathermap.org/data/2.5/weather?"
         static let latitudeParam = "lat="
         static let longitudeParam = "&lon="

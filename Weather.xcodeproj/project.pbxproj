@@ -18,6 +18,8 @@
 		0A03B4CE2A32982900E73863 /* WeatherViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A03B4CD2A32982900E73863 /* WeatherViewModel.swift */; };
 		0A7BC9502A32AEA600768D95 /* GeocodingDataModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A7BC94F2A32AEA600768D95 /* GeocodingDataModel.swift */; };
 		0A7BC9532A32EBFA00768D95 /* AppConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A7BC9522A32EBFA00768D95 /* AppConstants.swift */; };
+		0A7BC9552A333C3E00768D95 /* CacheImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A7BC9542A333C3E00768D95 /* CacheImage.swift */; };
+		0A7BC9572A33462200768D95 /* Config.plist in Resources */ = {isa = PBXBuildFile; fileRef = 0A7BC9562A33462200768D95 /* Config.plist */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -34,6 +36,8 @@
 		0A03B4CD2A32982900E73863 /* WeatherViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherViewModel.swift; sourceTree = "<group>"; };
 		0A7BC94F2A32AEA600768D95 /* GeocodingDataModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeocodingDataModel.swift; sourceTree = "<group>"; };
 		0A7BC9522A32EBFA00768D95 /* AppConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppConstants.swift; sourceTree = "<group>"; };
+		0A7BC9542A333C3E00768D95 /* CacheImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CacheImage.swift; sourceTree = "<group>"; };
+		0A7BC9562A33462200768D95 /* Config.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Config.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -110,6 +114,7 @@
 			children = (
 				0A03B4B42A32383F00E73863 /* Assets.xcassets */,
 				0A03B4B92A32383F00E73863 /* Info.plist */,
+				0A7BC9562A33462200768D95 /* Config.plist */,
 			);
 			path = "Supporting Files";
 			sourceTree = "<group>";
@@ -118,6 +123,7 @@
 			isa = PBXGroup;
 			children = (
 				0A03B4CB2A3292BA00E73863 /* TimeUtil.swift */,
+				0A7BC9542A333C3E00768D95 /* CacheImage.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -188,6 +194,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0A7BC9572A33462200768D95 /* Config.plist in Resources */,
 				0A03B4B82A32383F00E73863 /* LaunchScreen.storyboard in Resources */,
 				0A03B4B52A32383F00E73863 /* Assets.xcassets in Resources */,
 				0A03B4B32A32383D00E73863 /* Main.storyboard in Resources */,
@@ -204,6 +211,7 @@
 				0A03B4C92A3263EE00E73863 /* WeatherDataModel.swift in Sources */,
 				0A03B4CE2A32982900E73863 /* WeatherViewModel.swift in Sources */,
 				0A7BC9502A32AEA600768D95 /* GeocodingDataModel.swift in Sources */,
+				0A7BC9552A333C3E00768D95 /* CacheImage.swift in Sources */,
 				0A7BC9532A32EBFA00768D95 /* AppConstants.swift in Sources */,
 				0A03B4B02A32383D00E73863 /* HomeViewController.swift in Sources */,
 				0A03B4AC2A32383D00E73863 /* AppDelegate.swift in Sources */,
