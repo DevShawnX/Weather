@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import CoreLocation
 
 class HomeViewController: UIViewController {
     
@@ -23,6 +24,7 @@ class HomeViewController: UIViewController {
     @IBOutlet weak var sunsetTimeLabel: UILabel!
     @IBOutlet weak var lastUpdatedTimeLabel: UILabel!
     
+    let locationManager = CLLocationManager()
     let viewModel = WeatherViewModel()
     var coordinates:[GeocodingDataModel] = []
     var latitudeString: String = ""
@@ -32,8 +34,13 @@ class HomeViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         cityNameSearchBar.delegate = self
+        locationManager.requestWhenInUseAuthorization()
         if let lastSearchedCity = viewModel.getLastSearchedCity() {
             self.fetchCityCoordinates(cityName: lastSearchedCity)
+        } else if CLLocationManager.locationServicesEnabled() {
+            locationManager.delegate = self
+            locationManager.desiredAccuracy = kCLLocationAccuracyBest
+            locationManager.startUpdatingLocation()
         }
     }
     
@@ -45,15 +52,16 @@ class HomeViewController: UIViewController {
                 self.latitudeString = String(latitudeDouble)
                 self.longitudeString = String(longitudeDouble)
                 self.viewModel.setLastSearchedCity(city: cityName)
-                self.searchCurrentWeather()
+                self.searchCurrentWeather(latitude: self.latitudeString, longitude: self.longitudeString)
             }
         }
     }
     
-    func searchCurrentWeather() {
-        let weatherAPIUrl = URL(string: AppConstants.URL.weatherAPIRootUrl + AppConstants.URL.latitudeParam + latitudeString + AppConstants.URL.longitudeParam + longitudeString + AppConstants.URL.unitsParam + AppConstants.URL.imperialUnit + AppConstants.URL.apiKeyParam + AppConstants.URL.apiKey)
+    func searchCurrentWeather(latitude: String, longitude: String) {
+        let weatherAPIUrl = URL(string: AppConstants.URL.weatherAPIRootUrl + AppConstants.URL.latitudeParam + latitude + AppConstants.URL.longitudeParam + longitude + AppConstants.URL.unitsParam + AppConstants.URL.imperialUnit + AppConstants.URL.apiKeyParam + AppConstants.URL.apiKey)
         viewModel.fetchWeatherData(url: weatherAPIUrl) { weatherData in
             self.weatherDataSource = weatherData
+            self.locationManager.stopUpdatingLocation()
             self.displayWeatherInfo()
         }
     }
@@ -109,5 +117,19 @@ extension HomeViewController: UISearchBarDelegate {
     
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
         cityNameSearchBar.resignFirstResponder()
+    }
+}
+
+extension HomeViewController: CLLocationManagerDelegate {
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        if let location = locations.last {
+            let latitude = location.coordinate.latitude
+            let longitude = location.coordinate.longitude
+            self.searchCurrentWeather(latitude: String(latitude), longitude: String(longitude))
+        }
+    }
+    
+    func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
+        print(error.localizedDescription)
     }
 }
