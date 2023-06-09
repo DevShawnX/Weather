@@ -23,7 +23,7 @@ enum AppConstants {
     }
     
     enum Alert {
-        static let emptyNameTitle = "Heads Up!"
+        static let emptyNameTitle = "Error!"
         static let emptyNameMessage = "Please enter a city name!"
         static let emptyNameActionTitle = "OK"
         static let apiKeyFetchError = "Unable to read API Key from Config file!"

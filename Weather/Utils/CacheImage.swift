@@ -10,6 +10,7 @@ import UIKit
 
 class CacheImage {
     static let shared = CacheImage()
+    private init() {}
     private let cache = NSCache<NSString, UIImage>()
     
     func getImageCache(key: String) -> UIImage? {

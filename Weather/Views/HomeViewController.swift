@@ -40,6 +40,8 @@ class HomeViewController: UIViewController {
             self.fetchCityCoordinates(cityName: lastSearchedCity)
         } else if CLLocationManager.locationServicesEnabled() {
             locationManager.delegate = self
+            locationManager.pausesLocationUpdatesAutomatically = false
+            locationManager.allowsBackgroundLocationUpdates = false
             locationManager.desiredAccuracy = kCLLocationAccuracyBest
             locationManager.startUpdatingLocation()
         }
@@ -64,7 +66,6 @@ class HomeViewController: UIViewController {
         let weatherAPIUrl = URL(string: AppConstants.URL.weatherAPIRootUrl + AppConstants.URL.latitudeParam + latitude + AppConstants.URL.longitudeParam + longitude + AppConstants.URL.unitsParam + AppConstants.URL.imperialUnit + AppConstants.URL.apiKeyParam + fetchApiKey())
         viewModel.fetchWeatherData(url: weatherAPIUrl) { weatherData in
             self.weatherDataSource = weatherData
-            self.locationManager.stopUpdatingLocation()
             self.displayWeatherInfo()
         }
     }
@@ -141,6 +142,7 @@ extension HomeViewController: CLLocationManagerDelegate {
         if let location = locations.last {
             let latitude = location.coordinate.latitude
             let longitude = location.coordinate.longitude
+            manager.stopUpdatingLocation()
             self.searchCurrentWeather(latitude: String(latitude), longitude: String(longitude))
         }
     }
