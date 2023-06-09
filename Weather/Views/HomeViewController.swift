@@ -27,13 +27,14 @@ class HomeViewController: UIViewController {
     let locationManager = CLLocationManager()
     let viewModel = WeatherViewModel()
     var coordinates:[GeocodingDataModel] = []
-    var latitudeString: String = ""
-    var longitudeString: String = ""
+    var latitudeString: String = AppConstants.emptyValue
+    var longitudeString: String = AppConstants.emptyValue
     var weatherDataSource: WeatherDataModel?
 
     override func viewDidLoad() {
         super.viewDidLoad()
         cityNameSearchBar.delegate = self
+        // Request location pemission from users, the app will automatically load weather data of user's current location if permission granted. The app will automatically load weather data of the last city user manually searched upon launch.
         locationManager.requestWhenInUseAuthorization()
         if let lastSearchedCity = viewModel.getLastSearchedCity() {
             self.fetchCityCoordinates(cityName: lastSearchedCity)
@@ -44,6 +45,7 @@ class HomeViewController: UIViewController {
         }
     }
     
+    // This method is used to call Geocoding API and fetch coordinates
     func fetchCityCoordinates(cityName: String) {
         let geocodingAPIUrl = URL(string: AppConstants.URL.geocodingAPIRootUrl + AppConstants.URL.cityParam + cityName + AppConstants.URL.apiKeyParam + fetchApiKey())
         viewModel.fetchGeocodingData(url: geocodingAPIUrl) { location in
@@ -57,6 +59,7 @@ class HomeViewController: UIViewController {
         }
     }
     
+    // This method is used to call current weather API and fetch weather data
     func searchCurrentWeather(latitude: String, longitude: String) {
         let weatherAPIUrl = URL(string: AppConstants.URL.weatherAPIRootUrl + AppConstants.URL.latitudeParam + latitude + AppConstants.URL.longitudeParam + longitude + AppConstants.URL.unitsParam + AppConstants.URL.imperialUnit + AppConstants.URL.apiKeyParam + fetchApiKey())
         viewModel.fetchWeatherData(url: weatherAPIUrl) { weatherData in
@@ -66,8 +69,10 @@ class HomeViewController: UIViewController {
         }
     }
     
+    // This method is used to display weather info on the UI
     func displayWeatherInfo() {
         if let weatherIcon = self.weatherDataSource?.weather[0].icon, let cityName = self.weatherDataSource?.name, let temperature = self.weatherDataSource?.main.temp, let weather = self.weatherDataSource?.weather[0].main, let weatherDesc = self.weatherDataSource?.weather[0].description, let minTemp = self.weatherDataSource?.main.tempMin, let maxTemp = self.weatherDataSource?.main.tempMax, let feelsLike = self.weatherDataSource?.main.feelsLike, let humidity = self.weatherDataSource?.main.humidity, let sunriseTime = self.weatherDataSource?.sys.sunrise, let sunsetTime = self.weatherDataSource?.sys.sunset, let lastUpdatedTime = self.weatherDataSource?.dt {
+            // Cache image
             DispatchQueue.global(qos: .background).async {
                 if let image = CacheImage.shared.getImageCache(key: weatherIcon) {
                     DispatchQueue.main.async {
@@ -93,32 +98,33 @@ class HomeViewController: UIViewController {
             
             DispatchQueue.main.async {
                 self.cityNameLabel.text = cityName
-                self.temperatureLabel.text = String(Int(temperature)) + "°"
+                self.temperatureLabel.text = String(Int(temperature)) + AppConstants.degree
                 self.weatherLabel.text = weather
                 self.weatherDescriptionLabel.text = weatherDesc
-                self.minTemperatureLabel.text = "L:" + String(Int(minTemp)) + "°"
-                self.maxTemperatureLabel.text = "H:" + String(Int(maxTemp)) + "°"
-                self.feelsLikeTemperatureLabel.text = String(Int(feelsLike)) + "°"
-                self.humidityLabel.text = String(humidity) + "%"
+                self.minTemperatureLabel.text = AppConstants.low + String(Int(minTemp)) + AppConstants.degree
+                self.maxTemperatureLabel.text = AppConstants.high + String(Int(maxTemp)) + AppConstants.degree
+                self.feelsLikeTemperatureLabel.text = String(Int(feelsLike)) + AppConstants.degree
+                self.humidityLabel.text = String(humidity) + AppConstants.percentage
                 self.sunriseTimeLabel.text = TimeUtil.unixTimeToDate(unixTime: sunriseTime, isFullDateFormat: false)
                 self.sunsetTimeLabel.text = TimeUtil.unixTimeToDate(unixTime: sunsetTime, isFullDateFormat: false)
-                self.lastUpdatedTimeLabel.text = "Last updated: " + TimeUtil.unixTimeToDate(unixTime: lastUpdatedTime, isFullDateFormat: true)
+                self.lastUpdatedTimeLabel.text = AppConstants.lastUpdated + TimeUtil.unixTimeToDate(unixTime: lastUpdatedTime, isFullDateFormat: true)
             }
         }
     }
 }
 
+// MARK: - UISearchBar Delegate Functions
 extension HomeViewController: UISearchBarDelegate {
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         let trimmedCityName = cityNameSearchBar.text?.trimmingCharacters(in: .whitespacesAndNewlines)
-        if trimmedCityName == "" {
+        if trimmedCityName == AppConstants.emptyValue {
             let alertController = UIAlertController(title: AppConstants.Alert.emptyNameTitle, message: AppConstants.Alert.emptyNameMessage, preferredStyle: .alert)
             let alertAction = UIAlertAction(title: AppConstants.Alert.emptyNameActionTitle, style: .default, handler: nil)
             alertController.addAction(alertAction)
             self.present(alertController, animated: true, completion: nil)
         }
         
-        if let cityName = trimmedCityName?.replacingOccurrences(of: " ", with: "+") {
+        if let cityName = trimmedCityName?.replacingOccurrences(of: AppConstants.space, with: AppConstants.plus) {
             self.fetchCityCoordinates(cityName: cityName)
         }
         cityNameSearchBar.resignFirstResponder()
@@ -129,6 +135,7 @@ extension HomeViewController: UISearchBarDelegate {
     }
 }
 
+// MARK: - CLLocationManager Delegate Functions
 extension HomeViewController: CLLocationManagerDelegate {
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         if let location = locations.last {
@@ -143,10 +150,11 @@ extension HomeViewController: CLLocationManagerDelegate {
     }
 }
 
+// MARK: - Fetch API KEY FROM CONFIG PLIST
 extension HomeViewController {
     func fetchApiKey() -> String {
-        guard let configPath = Bundle.main.path(forResource: "Config", ofType: "plist"), let config = NSDictionary(contentsOfFile: configPath), let apiKey = config["ApiKey"] as? String else {
-            fatalError("Unable to read API Key from Config file!")
+        guard let configPath = Bundle.main.path(forResource: AppConstants.config, ofType: AppConstants.plist), let config = NSDictionary(contentsOfFile: configPath), let apiKey = config[AppConstants.apiKey] as? String else {
+            fatalError(AppConstants.Alert.apiKeyFetchError)
         }
         return apiKey
     }

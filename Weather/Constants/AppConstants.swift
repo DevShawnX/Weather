@@ -26,5 +26,23 @@ enum AppConstants {
         static let emptyNameTitle = "Heads Up!"
         static let emptyNameMessage = "Please enter a city name!"
         static let emptyNameActionTitle = "OK"
+        static let apiKeyFetchError = "Unable to read API Key from Config file!"
+        static let geocodingApiUrlError = "Failed to get geocoding API URL!"
+        static let geocodingApiStatusCode = "Geocoding API HTTP Status Code: "
+        static let weatherApiUrlError = "Failed to get weather API URL!"
+        static let weatherApiStatusCode = "Weather API HTTP Status Code: "
     }
+    
+    static let emptyValue = ""
+    static let space = " "
+    static let degree = "°"
+    static let percentage = "%"
+    static let plus = "+"
+    static let low = "L:"
+    static let high = "H:"
+    static let lastUpdated = "Last updated: "
+    static let config = "Config"
+    static let plist = "plist"
+    static let apiKey = "ApiKey"
+    static let lastSearchedCity = "LastSearchedCity"
 }

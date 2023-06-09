@@ -8,6 +8,6 @@
 import Foundation
 
 struct GeocodingDataModel: Decodable {
-    var lat: Double?
-    var lon: Double?
+    var lat: Double? // Latitude
+    var lon: Double? // Longitude
 }
