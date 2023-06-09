@@ -8,6 +8,7 @@
 import Foundation
 
 class TimeUtil {
+    // This method is used to convert Unix Time Stamp in UTC to data and time in local timezone
     static func unixTimeToDate(unixTime: Double, isFullDateFormat: Bool) -> String {
         let date = Date(timeIntervalSince1970: unixTime)
         let dateFormatter = DateFormatter()

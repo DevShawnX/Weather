@@ -12,26 +12,26 @@ struct WeatherDataModel: Decodable {
     var weather: [WeatherInfo]
     var main: TemperatureInfo
     var visibility: Int?
-    var dt: Double? //Unix Timestamp UTC
-    var sys: SunInfo //Sunrise and Sunsine Time
-    var name: String? //City Name
+    var dt: Double? // Unix Timestamp UTC
+    var sys: SunInfo // Sunrise and Sunsine Time
+    var name: String? // City Name
     
     struct Coordinates: Decodable {
-        var lon: Double?
-        var lat: Double?
+        var lon: Double? // Longitude
+        var lat: Double? // Latitude
     }
 
     struct WeatherInfo: Decodable {
-        var main: String?
-        var description: String?
-        var icon: String?
+        var main: String? // Weather
+        var description: String? // Weather description
+        var icon: String? // Weather icon
     }
 
     struct TemperatureInfo: Decodable {
-        var temp: Double?
-        var feelsLike: Double?
-        var tempMin: Double?
-        var tempMax: Double?
+        var temp: Double? // Current temperature
+        var feelsLike: Double? // Feels like temperature
+        var tempMin: Double? // Minimum temperature
+        var tempMax: Double? // Maximum temperature
         var humidity: Int?
         
         enum CodingKeys: String, CodingKey {
@@ -44,7 +44,7 @@ struct WeatherDataModel: Decodable {
     }
 
     struct SunInfo: Decodable {
-        var sunrise: Double?
-        var sunset: Double?
+        var sunrise: Double? // Sunrise Unix Timestamp UTC
+        var sunset: Double? // Sunset Unix Timestamp UTC
     }
 }

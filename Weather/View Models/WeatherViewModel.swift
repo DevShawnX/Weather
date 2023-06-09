@@ -8,15 +8,16 @@
 import Foundation
 
 class WeatherViewModel {
+    // This method is used to fetch coordinates of given city
     func fetchGeocodingData(url: URL?, completionHandler: @escaping ([GeocodingDataModel]) -> Void) {
         guard let url = url else {
-            print("Failed to get API URL!")
+            print(AppConstants.Alert.geocodingApiUrlError)
             return
         }
         
         URLSession.shared.dataTask(with: url) { data, response, error in
             if let response = response as? HTTPURLResponse {
-                print("Geocoding API HTTP Status Code: \(response.statusCode)")
+                print(AppConstants.Alert.geocodingApiStatusCode + "\(response.statusCode)")
             }
             
             if let error = error {
@@ -38,15 +39,16 @@ class WeatherViewModel {
         }.resume()
     }
     
+    // This method is used to fetch weather data of given coordinates
     func fetchWeatherData(url: URL?, completionHandler: @escaping (WeatherDataModel) -> Void) {
         guard let url = url else {
-            print("Failed to get API URL!")
+            print(AppConstants.Alert.weatherApiUrlError)
             return
         }
         
         URLSession.shared.dataTask(with: url) { data, response, error in
             if let response = response as? HTTPURLResponse {
-                print("Weather API HTTP Status Code: \(response.statusCode)")
+                print(AppConstants.Alert.weatherApiStatusCode + "\(response.statusCode)")
             }
             
             if let error = error {
@@ -69,10 +71,10 @@ class WeatherViewModel {
     }
     
     func setLastSearchedCity(city: String) {
-        UserDefaults.standard.set(city, forKey: "LastSearchedCity")
+        UserDefaults.standard.set(city, forKey: AppConstants.lastSearchedCity)
     }
     
     func getLastSearchedCity() -> String? {
-        UserDefaults.standard.string(forKey: "LastSearchedCity")
+        UserDefaults.standard.string(forKey: AppConstants.lastSearchedCity)
     }
 }
