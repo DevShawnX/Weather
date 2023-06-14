@@ -123,10 +123,14 @@ extension HomeViewController: UISearchBarDelegate {
             let alertAction = UIAlertAction(title: AppConstants.Alert.emptyNameActionTitle, style: .default, handler: nil)
             alertController.addAction(alertAction)
             self.present(alertController, animated: true, completion: nil)
+            let warningGenerator = UINotificationFeedbackGenerator()
+            warningGenerator.notificationOccurred(.warning)
         }
         
         if let cityName = trimmedCityName?.replacingOccurrences(of: AppConstants.space, with: AppConstants.plus) {
             self.fetchCityCoordinates(cityName: cityName)
+            let successGenerator = UINotificationFeedbackGenerator()
+            successGenerator.notificationOccurred(.success)
         }
         cityNameSearchBar.resignFirstResponder()
     }
@@ -136,6 +140,8 @@ extension HomeViewController: UISearchBarDelegate {
     }
     
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+        let generator = UIImpactFeedbackGenerator(style: .medium)
+        generator.impactOccurred()
         cityNameSearchBar.resignFirstResponder()
         searchBar.showsCancelButton = false
     }
