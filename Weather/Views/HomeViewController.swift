@@ -131,8 +131,13 @@ extension HomeViewController: UISearchBarDelegate {
         cityNameSearchBar.resignFirstResponder()
     }
     
+    func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {
+        searchBar.showsCancelButton = true
+    }
+    
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
         cityNameSearchBar.resignFirstResponder()
+        searchBar.showsCancelButton = false
     }
 }
 
