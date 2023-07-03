@@ -117,20 +117,23 @@ class HomeViewController: UIViewController {
 // MARK: - UISearchBar Delegate Functions
 extension HomeViewController: UISearchBarDelegate {
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        var feedbackGenerator: UINotificationFeedbackGenerator? = nil
+        feedbackGenerator = UINotificationFeedbackGenerator()
+        feedbackGenerator?.prepare()
+        
         let trimmedCityName = cityNameSearchBar.text?.trimmingCharacters(in: .whitespacesAndNewlines)
         if trimmedCityName == AppConstants.emptyValue {
             let alertController = UIAlertController(title: AppConstants.Alert.emptyNameTitle, message: AppConstants.Alert.emptyNameMessage, preferredStyle: .alert)
             let alertAction = UIAlertAction(title: AppConstants.Alert.emptyNameActionTitle, style: .default, handler: nil)
             alertController.addAction(alertAction)
             self.present(alertController, animated: true, completion: nil)
-            let warningGenerator = UINotificationFeedbackGenerator()
-            warningGenerator.notificationOccurred(.warning)
+            feedbackGenerator?.notificationOccurred(.warning)
         }
         
         if let cityName = trimmedCityName?.replacingOccurrences(of: AppConstants.space, with: AppConstants.plus) {
             self.fetchCityCoordinates(cityName: cityName)
-            let successGenerator = UINotificationFeedbackGenerator()
-            successGenerator.notificationOccurred(.success)
+            feedbackGenerator?.notificationOccurred(.success)
+            feedbackGenerator = nil
         }
         cityNameSearchBar.resignFirstResponder()
     }
@@ -140,8 +143,11 @@ extension HomeViewController: UISearchBarDelegate {
     }
     
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
-        let generator = UIImpactFeedbackGenerator(style: .medium)
-        generator.impactOccurred()
+        var feedbackGenerator: UIImpactFeedbackGenerator? = nil
+        feedbackGenerator = UIImpactFeedbackGenerator(style: .light)
+        feedbackGenerator?.prepare()
+        feedbackGenerator?.impactOccurred()
+        feedbackGenerator = nil
         cityNameSearchBar.resignFirstResponder()
         searchBar.showsCancelButton = false
     }
