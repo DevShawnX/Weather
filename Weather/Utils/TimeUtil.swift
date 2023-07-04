@@ -12,7 +12,7 @@ class TimeUtil {
     static func unixTimeToDate(unixTime: Double, isFullDateFormat: Bool) -> String {
         let date = Date(timeIntervalSince1970: unixTime)
         let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = isFullDateFormat ? "yyyy-MM-dd HH:mm:ss" : "HH:mm"
+        dateFormatter.dateFormat = isFullDateFormat ? "MMM d, yyyy HH:mm:ss" : "HH:mm"
         dateFormatter.timeZone = TimeZone.current
         return dateFormatter.string(from: date)
     }
