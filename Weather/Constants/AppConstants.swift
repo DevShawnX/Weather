@@ -24,7 +24,7 @@ enum AppConstants {
     
     enum Alert {
         static let emptyNameTitle = "Error!"
-        static let emptyNameMessage = "Please enter a city name!"
+        static let emptyNameMessage = "Please enter a city name to search weather!"
         static let emptyNameActionTitle = "OK"
         static let apiKeyFetchError = "Unable to read API Key from Config file!"
         static let geocodingApiUrlError = "Failed to get geocoding API URL!"
@@ -45,4 +45,5 @@ enum AppConstants {
     static let plist = "plist"
     static let apiKey = "ApiKey"
     static let lastSearchedCity = "LastSearchedCity"
+    static let pullToRefresh = "Pull to refresh"
 }

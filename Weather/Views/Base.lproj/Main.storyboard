@@ -313,6 +313,7 @@
                         <outlet property="lastUpdatedTimeLabel" destination="hLt-yi-Gkt" id="5km-OR-6o1"/>
                         <outlet property="maxTemperatureLabel" destination="8ti-wN-Yjp" id="CBq-A5-HZ2"/>
                         <outlet property="minTemperatureLabel" destination="Qzr-JT-uBD" id="5su-6i-hJK"/>
+                        <outlet property="scrollView" destination="pG7-6s-MS4" id="vba-Jt-VaJ"/>
                         <outlet property="sunriseTimeLabel" destination="zDo-51-nuH" id="YGS-MW-gaP"/>
                         <outlet property="sunsetTimeLabel" destination="kA8-4l-wFB" id="iTB-WT-NCY"/>
                         <outlet property="temperatureLabel" destination="I1w-Jn-UP3" id="R6A-Tl-dXE"/>

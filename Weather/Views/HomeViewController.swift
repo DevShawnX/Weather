@@ -10,6 +10,7 @@ import CoreLocation
 
 class HomeViewController: UIViewController {
     
+    @IBOutlet weak var scrollView: UIScrollView!
     @IBOutlet weak var cityNameSearchBar: UISearchBar!
     @IBOutlet weak var weatherIconImage: UIImageView!
     @IBOutlet weak var cityNameLabel: UILabel!
@@ -45,6 +46,40 @@ class HomeViewController: UIViewController {
             locationManager.desiredAccuracy = kCLLocationAccuracyBest
             locationManager.startUpdatingLocation()
         }
+        configureRefreshControl()
+    }
+    
+    // This method is used to configure refresh control for pull to refresh
+    func configureRefreshControl () {
+        self.scrollView.refreshControl = UIRefreshControl()
+        self.scrollView.refreshControl?.attributedTitle = NSAttributedString(string: AppConstants.pullToRefresh)
+        self.scrollView.refreshControl?.addTarget(self, action: #selector(refreshWeatherData), for: .valueChanged)
+    }
+    
+    // This method is used to handle pull to refresh action
+    @objc func refreshWeatherData() {
+        var feedbackGenerator: UINotificationFeedbackGenerator? = nil
+        feedbackGenerator = UINotificationFeedbackGenerator()
+        feedbackGenerator?.prepare()
+        guard let cityName = self.viewModel.getLastSearchedCity() else {
+            let alertController = UIAlertController(title: AppConstants.Alert.emptyNameTitle, message: AppConstants.Alert.emptyNameMessage, preferredStyle: .alert)
+            let alertAction = UIAlertAction(title: AppConstants.Alert.emptyNameActionTitle, style: .default) { action in
+                DispatchQueue.main.async {
+                    self.scrollView.refreshControl?.endRefreshing()
+                }
+            }
+            alertController.addAction(alertAction)
+            self.present(alertController, animated: true, completion: nil)
+            feedbackGenerator?.notificationOccurred(.warning)
+            feedbackGenerator = nil
+            return
+        }
+        fetchCityCoordinates(cityName: cityName)
+        feedbackGenerator?.notificationOccurred(.success)
+        feedbackGenerator = nil
+        DispatchQueue.main.async {
+            self.scrollView.refreshControl?.endRefreshing()
+        }
     }
     
     // This method is used to call Geocoding API and fetch coordinates
@@ -55,7 +90,6 @@ class HomeViewController: UIViewController {
             if let latitudeDouble = self.coordinates.first?.lat, let longitudeDouble = self.coordinates.first?.lon {
                 self.latitudeString = String(latitudeDouble)
                 self.longitudeString = String(longitudeDouble)
-                self.viewModel.setLastSearchedCity(city: cityName)
                 self.searchCurrentWeather(latitude: self.latitudeString, longitude: self.longitudeString)
             }
         }
@@ -73,6 +107,7 @@ class HomeViewController: UIViewController {
     // This method is used to display weather info on the UI
     func displayWeatherInfo() {
         if let weatherIcon = self.weatherDataSource?.weather[0].icon, let cityName = self.weatherDataSource?.name, let temperature = self.weatherDataSource?.main.temp, let weather = self.weatherDataSource?.weather[0].main, let weatherDesc = self.weatherDataSource?.weather[0].description, let minTemp = self.weatherDataSource?.main.tempMin, let maxTemp = self.weatherDataSource?.main.tempMax, let feelsLike = self.weatherDataSource?.main.feelsLike, let humidity = self.weatherDataSource?.main.humidity, let sunriseTime = self.weatherDataSource?.sys.sunrise, let sunsetTime = self.weatherDataSource?.sys.sunset, let lastUpdatedTime = self.weatherDataSource?.dt {
+            self.viewModel.setLastSearchedCity(city: cityName)
             // Cache image
             DispatchQueue.global(qos: .background).async {
                 if let image = CacheImage.shared.getImageCache(key: weatherIcon) {
