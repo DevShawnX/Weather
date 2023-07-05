@@ -107,7 +107,7 @@ class HomeViewController: UIViewController {
     // This method is used to display weather info on the UI
     func displayWeatherInfo() {
         if let weatherIcon = self.weatherDataSource?.weather[0].icon, let cityName = self.weatherDataSource?.name, let temperature = self.weatherDataSource?.main.temp, let weather = self.weatherDataSource?.weather[0].main, let weatherDesc = self.weatherDataSource?.weather[0].description, let minTemp = self.weatherDataSource?.main.tempMin, let maxTemp = self.weatherDataSource?.main.tempMax, let feelsLike = self.weatherDataSource?.main.feelsLike, let humidity = self.weatherDataSource?.main.humidity, let sunriseTime = self.weatherDataSource?.sys.sunrise, let sunsetTime = self.weatherDataSource?.sys.sunset, let lastUpdatedTime = self.weatherDataSource?.dt {
-            self.viewModel.setLastSearchedCity(city: cityName)
+            self.viewModel.setLastSearchedCity(city: cityName.replacingOccurrences(of: AppConstants.space, with: AppConstants.plus))
             // Cache image
             DispatchQueue.global(qos: .background).async {
                 if let image = CacheImage.shared.getImageCache(key: weatherIcon) {
